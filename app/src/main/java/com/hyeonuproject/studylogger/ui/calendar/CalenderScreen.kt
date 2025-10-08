@@ -37,6 +37,7 @@ import java.time.YearMonth
 import java.time.format.TextStyle
 import java.util.Date
 import java.util.Locale
+import androidx.compose.runtime.LaunchedEffect
 
 @Composable
 fun CalendarScreen(
@@ -57,6 +58,9 @@ fun CalendarScreen(
         firstVisibleMonth = currentMonth,
         firstDayOfWeek = daysOfWeek.first()
     )
+    LaunchedEffect(state.firstVisibleMonth) {
+        viewModel.onMonthChanged(state.firstVisibleMonth.yearMonth)
+    }
 
     Column(
         modifier = modifier
@@ -91,6 +95,7 @@ fun CalendarScreen(
                     Spacer(modifier = Modifier.height(8.dp))
                 }
             }
+
         )
 
         Spacer(modifier = Modifier.height(16.dp))
