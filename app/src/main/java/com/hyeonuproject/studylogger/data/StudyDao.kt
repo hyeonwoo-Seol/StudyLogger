@@ -28,3 +28,6 @@ interface StudyDao {
     @Query("SELECT * FROM study_records WHERE startTime >= :dayStart AND startTime < :dayEnd ORDER BY startTime DESC")
     fun getRecordsByDay(dayStart: Long, dayEnd: Long): Flow<List<StudyRecord>>
 }
+
+@Query("SELECT * FROM study_records ORDER BY startTime DESC")
+fun getAllRecords(): Flow<List<StudyRecord>>

@@ -1,12 +1,8 @@
 package com.hyeonuproject.studylogger.ui.home
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Button
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -15,25 +11,56 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.hyeonuproject.studylogger.ui.theme.StudyLoggerTheme
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
-    // ViewModel의 StateFlow를 구독하여 데이터 변경을 감지합니다.
+fun HomeScreen(
+    modifier: Modifier = Modifier,
+    viewModel: HomeViewModel = viewModel()
+) {
     val timerText by viewModel.timerText.collectAsState()
     val isTimerRunning by viewModel.isTimerRunning.collectAsState()
+    val categories by viewModel.categories.collectAsState()
+    val selectedCategory by viewModel.selectedCategory.collectAsState()
+
+    var isDropdownExpanded by remember { mutableStateOf(false) }
 
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(
-            text = "선택된 카테고리: 알고리즘",
-            fontSize = 20.sp
-        )
+        // 1. 카테고리 선택 드롭다운 메뉴
+        ExposedDropdownMenuBox(
+            expanded = isDropdownExpanded,
+            onExpandedChange = { isDropdownExpanded = !isDropdownExpanded }
+        ) {
+            OutlinedTextField(
+                value = selectedCategory?.name ?: "카테고리를 선택하세요",
+                onValueChange = {},
+                readOnly = true,
+                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isDropdownExpanded) },
+                modifier = Modifier.menuAnchor()
+            )
+
+            ExposedDropdownMenu(
+                expanded = isDropdownExpanded,
+                onDismissRequest = { isDropdownExpanded = false }
+            ) {
+                categories.forEach { category ->
+                    DropdownMenuItem(
+                        text = { Text(category.name) },
+                        onClick = {
+                            viewModel.onCategorySelected(category)
+                            isDropdownExpanded = false
+                        }
+                    )
+                }
+            }
+        }
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // ViewModel의 timerText를 화면에 표시합니다.
+        // 2. 중앙 타이머
         Text(
             text = timerText,
             fontSize = 72.sp
@@ -41,6 +68,7 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
 
         Spacer(modifier = Modifier.height(24.dp))
 
+        // 3. 메모 입력란
         OutlinedTextField(
             value = "",
             onValueChange = { /*TODO*/ },
@@ -49,7 +77,7 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
 
         Spacer(modifier = Modifier.height(48.dp))
 
-        // 버튼 클릭 시 ViewModel의 toggleTimer 함수를 호출합니다.
+        // 4. 시작/정지 버튼
         Button(
             onClick = { viewModel.toggleTimer() },
             modifier = Modifier
@@ -57,7 +85,6 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
                 .padding(horizontal = 48.dp)
                 .height(60.dp)
         ) {
-            // isTimerRunning 상태에 따라 버튼 텍스트를 변경합니다.
             Text(text = if (isTimerRunning) "정지" else "시작", fontSize = 20.sp)
         }
     }

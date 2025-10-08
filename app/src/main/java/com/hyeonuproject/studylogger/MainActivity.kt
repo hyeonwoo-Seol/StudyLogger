@@ -36,6 +36,9 @@ import com.hyeonuproject.studylogger.ui.settings.CategorySettingsScreen
 import com.hyeonuproject.studylogger.ui.settings.SettingsScreen
 import com.hyeonuproject.studylogger.ui.settings.SettingsViewModel
 import com.hyeonuproject.studylogger.ui.theme.StudyLoggerTheme
+import androidx.compose.material.icons.filled.Analytics // 아이콘 추가
+import com.hyeonuproject.studylogger.ui.analysis.AnalysisScreen // 화면 추가
+import com.hyeonuproject.studylogger.ui.analysis.AnalysisViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,6 +53,7 @@ class MainActivity : ComponentActivity() {
                     modelClass.isAssignableFrom(HomeViewModel::class.java) -> HomeViewModel(studyDao) as T
                     modelClass.isAssignableFrom(CalendarViewModel::class.java) -> CalendarViewModel(studyDao) as T
                     modelClass.isAssignableFrom(SettingsViewModel::class.java) -> SettingsViewModel(studyDao) as T
+                    modelClass.isAssignableFrom(AnalysisViewModel::class.java) -> AnalysisViewModel(studyDao) as T
                     else -> throw IllegalArgumentException("Unknown ViewModel class")
                 }
             }
@@ -73,12 +77,14 @@ class MainActivity : ComponentActivity() {
                         composable("calendar") { CalendarScreen(viewModel = viewModel(factory = viewModelFactory)) }
                         composable("settings") { SettingsScreen(navController = navController) }
                         composable("categorySettings") { CategorySettingsScreen(viewModel = viewModel(factory = viewModelFactory)) }
+                        composable("analysis") { AnalysisScreen(viewModel = viewModel(factory = viewModelFactory)) }
                     }
                 }
             }
         }
     }
 }
+
 
 // 하단 네비게이션 바 UI
 @Composable
@@ -98,6 +104,12 @@ fun AppBottomNavigationBar(navController: NavHostController) {
             label = { Text("캘린더") },
             selected = currentRoute == "calendar",
             onClick = { navController.navigate("calendar") }
+        )
+        NavigationBarItem(
+            icon = { Icon(Icons.Filled.Analytics, contentDescription = "Analysis") },
+            label = { Text("분석") },
+            selected = currentRoute == "analysis",
+            onClick = { navController.navigate("analysis") }
         )
         NavigationBarItem(
             icon = { Icon(Icons.Filled.Settings, contentDescription = "Settings") },
