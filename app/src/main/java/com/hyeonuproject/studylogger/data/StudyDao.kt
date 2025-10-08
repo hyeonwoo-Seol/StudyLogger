@@ -27,7 +27,8 @@ interface StudyDao {
     // 특정 날짜(startTime과 endTime 사이)에 해당하는 모든 공부 기록을 가져옵니다.
     @Query("SELECT * FROM study_records WHERE startTime >= :dayStart AND startTime < :dayEnd ORDER BY startTime DESC")
     fun getRecordsByDay(dayStart: Long, dayEnd: Long): Flow<List<StudyRecord>>
+
+    @Query("SELECT * FROM study_records ORDER BY startTime DESC")
+    fun getAllRecords(): Flow<List<StudyRecord>>
 }
 
-@Query("SELECT * FROM study_records ORDER BY startTime DESC")
-fun getAllRecords(): Flow<List<StudyRecord>>

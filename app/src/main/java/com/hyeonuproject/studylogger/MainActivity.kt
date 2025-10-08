@@ -8,6 +8,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Analytics
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
@@ -28,6 +29,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.hyeonuproject.studylogger.data.AppDatabase
+import com.hyeonuproject.studylogger.ui.analysis.AnalysisScreen
+import com.hyeonuproject.studylogger.ui.analysis.AnalysisViewModel
 import com.hyeonuproject.studylogger.ui.calendar.CalendarScreen
 import com.hyeonuproject.studylogger.ui.calendar.CalendarViewModel
 import com.hyeonuproject.studylogger.ui.home.HomeScreen
@@ -36,9 +39,6 @@ import com.hyeonuproject.studylogger.ui.settings.CategorySettingsScreen
 import com.hyeonuproject.studylogger.ui.settings.SettingsScreen
 import com.hyeonuproject.studylogger.ui.settings.SettingsViewModel
 import com.hyeonuproject.studylogger.ui.theme.StudyLoggerTheme
-import androidx.compose.material.icons.filled.Analytics // 아이콘 추가
-import com.hyeonuproject.studylogger.ui.analysis.AnalysisScreen // 화면 추가
-import com.hyeonuproject.studylogger.ui.analysis.AnalysisViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,12 +62,10 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             StudyLoggerTheme {
-                // NavController 생성
                 val navController = rememberNavController()
                 Scaffold(
                     bottomBar = { AppBottomNavigationBar(navController = navController) }
                 ) { innerPadding ->
-                    // Navigation Host 설정
                     NavHost(
                         navController = navController,
                         startDestination = "home",
@@ -75,9 +73,9 @@ class MainActivity : ComponentActivity() {
                     ) {
                         composable("home") { HomeScreen(viewModel = viewModel(factory = viewModelFactory)) }
                         composable("calendar") { CalendarScreen(viewModel = viewModel(factory = viewModelFactory)) }
+                        composable("analysis") { AnalysisScreen(viewModel = viewModel(factory = viewModelFactory)) }
                         composable("settings") { SettingsScreen(navController = navController) }
                         composable("categorySettings") { CategorySettingsScreen(viewModel = viewModel(factory = viewModelFactory)) }
-                        composable("analysis") { AnalysisScreen(viewModel = viewModel(factory = viewModelFactory)) }
                     }
                 }
             }
@@ -85,8 +83,6 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-
-// 하단 네비게이션 바 UI
 @Composable
 fun AppBottomNavigationBar(navController: NavHostController) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
