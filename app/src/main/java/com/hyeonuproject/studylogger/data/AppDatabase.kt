@@ -9,7 +9,7 @@ import androidx.room.RoomDatabase
  * 데이터베이스 본체.
  * 앱의 모든 Entity(테이블)와 DAO를 포함하고 관리합니다.
  */
-@Database(entities = [StudyRecord::class, Category::class], version = 1)
+@Database(entities = [StudyRecord::class, Category::class], version = 1, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
 
     // 이 데이터베이스가 사용하는 DAO를 명시합니다.
